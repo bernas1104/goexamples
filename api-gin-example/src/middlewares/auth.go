@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -14,7 +13,12 @@ func AuthorizeJWT() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		const BEARER_SCHEMA = "Bearer "
 		authHeader := ctx.GetHeader("Authorization")
-		fmt.Println(authHeader)
+
+		if len(authHeader) == 0 {
+			ctx.AbortWithStatus(http.StatusForbidden)
+			return
+		}
+
 		token := authHeader[len(BEARER_SCHEMA):]
 
 		auth, err := services.NewJWTService().ValidateToken(token)
