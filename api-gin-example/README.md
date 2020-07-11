@@ -5,7 +5,7 @@ The API allows a simple CRUD for a User entity. The ORM used to map the structs
 to the SQLite3 Database is [GORM](https://gorm.io/).
 
 The application also allows for Users to be authenticated to the API using JWT.
-The [...](https://127.0.0.1) package is used to generate the JWT Token.
+The [jwt-go](https://github.com/dgrijalva/jwt-go) package is used to generate the JWT Token.
 
 ## API Feature Status
 - [ ] Users Endpoints
