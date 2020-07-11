@@ -9,8 +9,10 @@ The [...](https://127.0.0.1) package is used to generate the JWT Token.
 
 ## API Feature Status
 - [ ] Users Endpoints
-  - [ ] List all registered Users
+  - [x] List all registered Users
   - [ ] Register User
+    - [x] Persists User on DB
+    - [ ] Must hash password
   - [ ] Show specific User
   - [ ] Update Users account
     - [ ] Must be authenticated
