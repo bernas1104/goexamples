@@ -1,0 +1,34 @@
+package middlewares
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/bernas1104/goexamples/api-gin-example/src/services"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+)
+
+func AuthorizeJWT() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		const BEARER_SCHEMA = "Bearer "
+		authHeader := ctx.GetHeader("Authorization")
+		fmt.Println(authHeader)
+		token := authHeader[len(BEARER_SCHEMA):]
+
+		auth, err := services.NewJWTService().ValidateToken(token)
+
+		if auth.Valid {
+			claims := auth.Claims.(jwt.MapClaims)
+			log.Println("Claims[Name]: ", claims["name"])
+			log.Println("Claims[Admin]: ", claims["admin"])
+			log.Println("Claims[Issuer]: ", claims["iss"])
+			log.Println("Claims[IssuedAt]: ", claims["iat"])
+			log.Println("Claims[ExpiresAt]: ", claims["exp"])
+		} else {
+			log.Println(err)
+			ctx.AbortWithStatus(http.StatusForbidden)
+		}
+	}
+}

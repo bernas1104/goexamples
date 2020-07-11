@@ -16,8 +16,8 @@ The [...](https://127.0.0.1) package is used to generate the JWT Token.
     - [ ] Must be authenticated
   - [ ] Delete Users account
     - [ ] Must be authenticated
-- [ ] Sessions Endpoint
-  - [ ] Create session (Authenticate JWT)
+- [x] Sessions Endpoint
+  - [x] Create session (Authenticate JWT)
 
 ## API Tests
 - [ ] Unit Tests
