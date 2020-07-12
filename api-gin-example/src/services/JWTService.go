@@ -9,13 +9,12 @@ import (
 )
 
 type JWTService interface {
-	GenerateToken(name string, admin bool) string
+	GenerateToken(username string) string
 	ValidateToken(token string) (*jwt.Token, error)
 }
 
 type jwtCustomClaims struct {
-	Name  string `json:"name"`
-	Admin bool   `json:"admin"`
+	Name string `json:"name"`
 	jwt.StandardClaims
 }
 
@@ -39,10 +38,9 @@ func getSecretKey() string {
 	return secret
 }
 
-func (service *jwtService) GenerateToken(username string, admin bool) string {
+func (service *jwtService) GenerateToken(username string) string {
 	claims := &jwtCustomClaims{
 		username,
-		admin,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 			Issuer:    service.issuer,

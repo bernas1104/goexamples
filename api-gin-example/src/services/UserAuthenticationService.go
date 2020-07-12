@@ -1,25 +1,37 @@
 package services
 
+import (
+	"github.com/bernas1104/goexamples/api-gin-example/src/providers"
+	"github.com/bernas1104/goexamples/api-gin-example/src/repositories"
+)
+
 type UserAuthenticationService interface {
-	AuthenticateUser(username string, password string) bool
+	AuthenticateUser(email string, password string) bool
 }
 
 type userAuthenticationService struct {
-	authorizedUsername string // Placeholder; No-DB yet
-	authorizedPassword string // Placeholder; No-DB yet
+	usersRepository repositories.UsersRepository
+	hashProvider    providers.HashProvider
 }
 
 func NewUserAuthenticationService() UserAuthenticationService {
 	return &userAuthenticationService{
-		authorizedUsername: "johndoe@example.com",
-		authorizedPassword: "123456",
+		usersRepository: repositories.NewUsersRepository(),
+		hashProvider:    providers.NewBCryptHashProvider(),
 	}
 }
 
 func (service *userAuthenticationService) AuthenticateUser(
-	username string,
+	email string,
 	password string,
 ) bool {
-	return service.authorizedUsername == username &&
-		service.authorizedPassword == password
+	user := service.usersRepository.FindByEmail(email)
+
+	if user.ID == 0 {
+		return false
+	}
+
+	auth := service.hashProvider.Verify(user.Password, password)
+
+	return auth
 }

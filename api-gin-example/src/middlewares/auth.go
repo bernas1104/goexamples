@@ -26,10 +26,10 @@ func AuthorizeJWT() gin.HandlerFunc {
 		if auth.Valid {
 			claims := auth.Claims.(jwt.MapClaims)
 			log.Println("Claims[Name]: ", claims["name"])
-			log.Println("Claims[Admin]: ", claims["admin"])
 			log.Println("Claims[Issuer]: ", claims["iss"])
 			log.Println("Claims[IssuedAt]: ", claims["iat"])
 			log.Println("Claims[ExpiresAt]: ", claims["exp"])
+			ctx.Set("ID", claims["id"])
 		} else {
 			log.Println(err)
 			ctx.AbortWithStatus(http.StatusForbidden)

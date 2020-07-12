@@ -10,11 +10,14 @@ import (
 )
 
 var (
-	listAllUsers    services.ListAllUsersService = services.NewListAllUsersService()
-	createUser      services.CreateUserService   = services.NewCreateUserService()
-	usersController controllers.UsersController  = controllers.NewUsersController(
+	listAllUsers services.ListAllUsersService = services.NewListAllUsersService()
+	createUser   services.CreateUserService   = services.NewCreateUserService()
+	showUser     services.ShowUserService     = services.NewShowUserService()
+
+	usersController controllers.UsersController = controllers.NewUsersController(
 		listAllUsers,
 		createUser,
+		showUser,
 	)
 )
 
@@ -26,16 +29,28 @@ func setupUsersRoutes(app *gin.Engine) {
 			ctx.JSON(http.StatusOK, usersController.Index(ctx))
 		})
 
-		users.POST("/", func(ctx *gin.Context) {
-			user := usersController.Create(ctx)
+		users.GET("/:id", func(ctx *gin.Context) {
+			user, err := usersController.Show(ctx)
 
-			if user.ID == 0 {
+			if err != nil {
 				ctx.JSON(http.StatusBadRequest, gin.H{
-					"error": "Error while creating new User",
+					"error": err.Error(),
 				})
+			} else {
+				ctx.JSON(http.StatusOK, user)
 			}
+		})
 
-			ctx.JSON(http.StatusOK, user)
+		users.POST("/", func(ctx *gin.Context) {
+			user, err := usersController.Create(ctx)
+
+			if err != nil {
+				ctx.JSON(http.StatusBadRequest, gin.H{
+					"error": err.Error(),
+				})
+			} else {
+				ctx.JSON(http.StatusOK, user)
+			}
 		})
 	}
 }

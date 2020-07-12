@@ -1,8 +1,12 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/bernas1104/goexamples/api-gin-example/src/entities"
 	"github.com/jinzhu/gorm"
+
+	// GORM Dialect
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
@@ -24,19 +28,19 @@ func NewUsersRepository() UsersRepository {
 	}
 }
 
-func (repository *usersRepository) Save(user entities.User) entities.User {
-	id := user.ID
+func (repository *usersRepository) Create(user entities.User) (entities.User, error) {
+	email := user.Email
 
 	var userExists entities.User
-	repository.ormRepository.Where(&entities.User{ID: id}).First(&userExists)
+	repository.ormRepository.Where(&entities.User{Email: email}).First(&userExists)
 
 	if userExists.ID != 0 {
-		repository.ormRepository.Save(&user)
-	} else {
-		repository.ormRepository.Create(&user)
+		return entities.User{}, fmt.Errorf("E-mail is already being used")
 	}
 
-	return user
+	repository.ormRepository.Create(&user)
+
+	return user, nil
 }
 
 func (repository *usersRepository) Delete(id uint64) {
@@ -51,6 +55,14 @@ func (repository *usersRepository) FindAll() []entities.User {
 	repository.ormRepository.Find(&users)
 
 	return users
+}
+
+func (repository *usersRepository) FindByEmail(email string) entities.User {
+	var user entities.User
+
+	repository.ormRepository.Where(&entities.User{Email: email}).First(&user)
+
+	return user
 }
 
 func (repository *usersRepository) FindByID(id uint64) entities.User {

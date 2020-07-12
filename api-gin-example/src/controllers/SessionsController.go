@@ -43,7 +43,7 @@ func (controller *sessionsController) Create(ctx *gin.Context) string {
 		return ""
 	}
 
-	token := controller.jwt.GenerateToken(userAuth.Email, true)
+	token := controller.jwt.GenerateToken(userAuth.Email)
 
 	return token
 }

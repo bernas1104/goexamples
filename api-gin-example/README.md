@@ -10,10 +10,10 @@ The [jwt-go](https://github.com/dgrijalva/jwt-go) package is used to generate th
 ## API Feature Status
 - [ ] Users Endpoints
   - [x] List all registered Users
-  - [ ] Register User
+  - [x] Register User
     - [x] Persists User on DB
-    - [ ] Must hash password
-  - [ ] Show specific User
+    - [x] Must hash password
+  - [x] Show specific User
   - [ ] Update Users account
     - [ ] Must be authenticated
   - [ ] Delete Users account
