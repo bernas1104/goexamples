@@ -14,10 +14,10 @@ The [jwt-go](https://github.com/dgrijalva/jwt-go) package is used to generate th
     - [x] Persists User on DB
     - [x] Must hash password
   - [x] Show specific User
-  - [ ] Update Users account
-    - [ ] Must be authenticated
-  - [ ] Delete Users account
-    - [ ] Must be authenticated
+  - [x] Update Users account
+    - [x] Must be authenticated
+  - [x] Delete Users account
+    - [x] Must be authenticated
 - [x] Sessions Endpoint
   - [x] Create session (Authenticate JWT)
 

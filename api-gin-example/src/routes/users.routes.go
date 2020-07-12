@@ -5,52 +5,36 @@ import (
 	"github.com/bernas1104/goexamples/api-gin-example/src/middlewares"
 	"github.com/bernas1104/goexamples/api-gin-example/src/services"
 	"github.com/gin-gonic/gin"
-
-	"net/http"
 )
 
 var (
 	listAllUsers services.ListAllUsersService = services.NewListAllUsersService()
 	createUser   services.CreateUserService   = services.NewCreateUserService()
 	showUser     services.ShowUserService     = services.NewShowUserService()
+	updateUser   services.UpdateUserService   = services.NewUpdateUserService()
+	deleteUser   services.DeleteUserService   = services.NewDeleteUserService()
 
 	usersController controllers.UsersController = controllers.NewUsersController(
 		listAllUsers,
 		createUser,
 		showUser,
+		updateUser,
+		deleteUser,
 	)
 )
 
 // setupUsersRoutes Defines routes for the User entity
 func setupUsersRoutes(app *gin.Engine) {
-	users := app.Group("v1/users", middlewares.AuthorizeJWT())
+	users := app.Group("v1/users")
 	{
-		users.GET("/", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, usersController.Index(ctx))
-		})
+		users.GET("/", usersController.Index)
 
-		users.GET("/:id", func(ctx *gin.Context) {
-			user, err := usersController.Show(ctx)
+		users.GET("/:id", usersController.Show)
 
-			if err != nil {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"error": err.Error(),
-				})
-			} else {
-				ctx.JSON(http.StatusOK, user)
-			}
-		})
+		users.POST("/", usersController.Create)
 
-		users.POST("/", func(ctx *gin.Context) {
-			user, err := usersController.Create(ctx)
+		users.PUT("/", middlewares.AuthorizeJWT(), usersController.Update)
 
-			if err != nil {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"error": err.Error(),
-				})
-			} else {
-				ctx.JSON(http.StatusOK, user)
-			}
-		})
+		users.DELETE("/", middlewares.AuthorizeJWT(), usersController.Delete)
 	}
 }
